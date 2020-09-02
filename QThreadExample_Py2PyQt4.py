@@ -14,7 +14,7 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 
 # Class ThreadExample
-# Basic thread that emites signal to print a message every 100ms
+# Basic thread that emites signal to print a message every 1s
 # Start thread using .start method
 #     myThread = ThreadExample()
 #     myThread.start()
@@ -33,16 +33,19 @@ class ThreadExample(QtCore.QThread):
     def run(self):
         while True:
             self.emit(QtCore.SIGNAL('printLine()'))
-            """
+            
             # Using sleep between thread processes
             self.sleep(1)
+            #self.msleep(10)
             """
-
             # Process all events while paused
+            # More taxing on memory, more ideal to run with self.msleep()
+            #     w/ low time value
             endTime = QtCore.QTime.currentTime().addSecs(1)
             while QtCore.QTime.currentTime() < endTime:
                 QtCore.QCoreApplication.processEvents(
                     QtCore.QEventLoop.AllEvents, 1000)
+            """
 
 # Class ThreadMain
 # Setup basic GUI and process signals
