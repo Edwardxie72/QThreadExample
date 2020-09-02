@@ -1,6 +1,6 @@
 """
     Edward Xie 09-01-20
-    Run in Python2 w/ PyQt4
+    Run in Python2.7 w/ PyQt4
     Constantly print a message into console from a thread, can be stopped at
         any time by either exiting the program or clicking the exit button
     Because messages are processed separately, we can stop at any time
@@ -63,6 +63,7 @@ class ThreadMain(QtGui.QMainWindow):
 
         self.startProgram()
 
+    # Main program dealing with threads and signals
     def startProgram(self):
         # Start Thread and check for signals here
         self.getThread = ThreadExample()
@@ -75,11 +76,13 @@ class ThreadMain(QtGui.QMainWindow):
         #     which will then call .closeEvent with proper event
         self.exitButton.clicked.connect(self.close)
 
+    # Action executed during thread runtime
     def printLine(self):
         print "Look it's a message"
 
-    # Upon stopping, terminate thread
+    # Upon stopping, terminate thread before closing window
     def closeEvent(self, event=None):
+        # Exit thread
         self.getThread.terminate()
         # Accept event to close properly
         event.accept()
