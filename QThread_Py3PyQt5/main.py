@@ -1,17 +1,19 @@
 """
-    Edward Xie 09-01-20
-    Run in Python2.7 w/ PyQt4
+    Edward Xie 10-01-20
+    Run in Python3.8 w/ >= PyQt5.9
     Constantly print a message into console from a thread, can be stopped at
         any time by either exiting the program or clicking the exit button
     Because messages are processed separately, we can stop at any time
+    Main changes from PyQt4 are widgets are now under QtWidtets and signals
+        are more explicitly defined and connected to
     References:
         https://nikolak.com/pyqt-threading-tutorial/
-        https://stackoverflow.com/questions/7311943/
+        https://stackoverflow.com/questions/7311944/
 """
 
 import sys
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 
 # Class ThreadExample
 # Basic thread that emites signal to print a message every 1s
@@ -23,6 +25,7 @@ from PyQt4 import QtCore
 #     myThread = ThreadExample()
 #     myThread.terminate()
 class ThreadExample(QtCore.QThread):
+    printSignal = QtCore.pyqtSignal()
     def __init__(self):
         QtCore.QThread.__init__(self)
 
@@ -32,11 +35,12 @@ class ThreadExample(QtCore.QThread):
     # Code to execute when running the thread
     def run(self):
         while True:
-            self.emit(QtCore.SIGNAL('printLine()'))
-            
+            #self.emit(QtCore.SIGNAL('printLine()'))
+            self.printSignal.emit()
+
             # Using sleep between thread processes
             self.sleep(1)
-            #self.msleep(10)
+            # self.msleep(10)
             """
             # Process all events while paused
             # More taxing on memory, more ideal to run with self.msleep()
@@ -49,19 +53,19 @@ class ThreadExample(QtCore.QThread):
 
 # Class ThreadMain
 # Setup basic GUI and process signals
-class ThreadMain(QtGui.QMainWindow):
+class ThreadMain(QtWidgets.QMainWindow):
     def __init__(self):
-        QtGui.QMainWindow.__init__(self)
+        QtWidgets.QMainWindow.__init__(self)
         self.resize(200, 200)
 
-        self.center = QtGui.QWidget()
+        self.center = QtWidgets.QWidget()
         self.setCentralWidget(self.center)
 
-        self.layout = QtGui.QGridLayout()
+        self.layout = QtWidgets.QGridLayout()
         self.center.setLayout(self.layout)
 
         # Set up simple single button which mirrors 'X' button
-        self.exitButton = QtGui.QPushButton('Exit')
+        self.exitButton = QtWidgets.QPushButton('Exit')
         self.layout.addWidget(self.exitButton)
 
         self.startProgram()
@@ -72,8 +76,9 @@ class ThreadMain(QtGui.QMainWindow):
         self.getThread = ThreadExample()
         self.getThread.start()
 
-        self.connect(self.getThread, QtCore.SIGNAL('printLine()'),
-                     self.printLine)
+        #self.connect(self.getThread, QtCore.SIGNAL('printLine()'),
+                     #self.printLine)
+        self.getThread.printSignal.connect(self.printLine)
 
         # Clicking passes different event object, so call .close method
         #     which will then call .closeEvent with proper event
@@ -81,7 +86,7 @@ class ThreadMain(QtGui.QMainWindow):
 
     # Action executed during thread runtime
     def printLine(self):
-        print "Look it's a message"
+        print("Look it's a message")
 
     # Upon stopping, terminate thread before closing window
     def closeEvent(self, event=None):
@@ -92,7 +97,7 @@ class ThreadMain(QtGui.QMainWindow):
         self.close()
 
 def main():
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     mainWindow = ThreadMain()
     mainWindow.show()
     sys.exit(app.exec_())

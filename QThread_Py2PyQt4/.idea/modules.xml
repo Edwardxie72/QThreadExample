@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/QThreadExample.iml" filepath="$PROJECT_DIR$/.idea/QThreadExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/QThread_Py2PyQt4.iml" filepath="$PROJECT_DIR$/.idea/QThread_Py2PyQt4.iml" />
     </modules>
   </component>
 </project>
